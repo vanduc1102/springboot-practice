@@ -5,6 +5,9 @@ target
 .classpath
 .project
 
+.gradle
+build
+
 
 # Compiled class file
 *.class
