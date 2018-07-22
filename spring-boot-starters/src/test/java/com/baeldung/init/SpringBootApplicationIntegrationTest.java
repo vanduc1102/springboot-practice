@@ -3,6 +3,7 @@ package com.baeldung.init;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import com.baeldung.Application;
 import java.nio.charset.Charset;
 import org.junit.Before;
 import org.junit.Test;

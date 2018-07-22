@@ -1,8 +1,12 @@
 package com.baeldung.controller.web.api;
 
 import com.baeldung.model.GenericEntity;
-import java.util.ArrayList;
+import com.baeldung.repository.GenericEntityRepository;
+import com.baeldung.service.GenericEntityService;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,32 +15,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/entity")
 public class GenericEntityController {
-
-  private List<GenericEntity> entityList = new ArrayList<>();
-
-  {
-    entityList.add(new GenericEntity(1l, "entity 1"));
-    entityList.add(new GenericEntity(2l, "entity 2"));
-    entityList.add(new GenericEntity(3l, "entity 3"));
-    entityList.add(new GenericEntity(4l, "entity 4"));
-  }
+  @Autowired
+  private GenericEntityRepository genericEntityRepository;
+  @Autowired
+  private GenericEntityService genericEntityService;
 
   @RequestMapping(value = "/", method = RequestMethod.POST)
   public GenericEntity addEntity(GenericEntity entity) {
-    entityList.add(entity);
+    this.genericEntityRepository.save(entity);
     return entity;
   }
 
   @RequestMapping(value = "/", method = RequestMethod.GET)
   public List<GenericEntity> findAll() {
-    return entityList;
+    return StreamSupport.
+        stream(this.genericEntityRepository.findAll().spliterator(),false).
+        collect(Collectors.toList());
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   public GenericEntity findById(@PathVariable Long id) {
-    return entityList.stream().
-        filter(entity -> entity.getId().equals(id)).
-        findFirst().get();
+    return this.genericEntityRepository.findById(id).orElse(null);
   }
 
 }
